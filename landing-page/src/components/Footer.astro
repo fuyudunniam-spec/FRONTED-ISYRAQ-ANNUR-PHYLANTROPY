@@ -1,0 +1,122 @@
+---
+import { client, queries, urlFor } from '../lib/sanity';
+
+// Fetch site settings from Sanity
+let siteSettings: any = null;
+
+try {
+    siteSettings = await client.fetch(queries.siteSettings);
+} catch (error) {
+    console.error('Failed to fetch site settings from Sanity:', error);
+}
+
+const siteTitle = siteSettings?.title || 'AL-BISRI';
+const contactInfo = siteSettings?.contactInfo || {
+    address: 'Jl. Pesantren No. 45\nKota Batu, Jawa Timur',
+    email: 'info@albisri.org',
+    phone: '+62 812-3456-7890',
+};
+const socialLinks = siteSettings?.socialLinks || [];
+
+// Map platform names to Lucide icon names
+const platformIcons: Record<string, string> = {
+    facebook: 'facebook',
+    instagram: 'instagram',
+    twitter: 'twitter',
+    youtube: 'youtube',
+    linkedin: 'linkedin',
+    tiktok: 'music-2',
+    whatsapp: 'message-circle',
+};
+---
+
+<footer class="bg-royal-950 text-stone-400 pt-20 pb-10 border-t border-royal-900">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 mb-16">
+        <!-- Brand -->
+        <div class="md:col-span-1">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-gold-500 text-royal-950 flex items-center justify-center rounded-full shadow-lg">
+                    <span class="font-display font-bold text-lg">A</span>
+                </div>
+                <span class="font-display font-bold text-white text-lg tracking-widest">{siteTitle}</span>
+            </div>
+            <p class="text-sm leading-relaxed mb-6 font-light">
+                Yayasan sosial & pendidikan yang berdedikasi memuliakan anak yatim melalui pendidikan berkualitas.
+            </p>
+            <div class="flex gap-4">
+                {socialLinks.length > 0 ? (
+                    socialLinks.map((social: any) => (
+                        <a 
+                            href={social.url} 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="w-10 h-10 rounded-full bg-royal-900 flex items-center justify-center text-stone-400 hover:bg-gold-500 hover:text-royal-950 transition"
+                        >
+                            <i data-lucide={platformIcons[social.platform?.toLowerCase()] || 'link'} class="w-5 h-5"></i>
+                        </a>
+                    ))
+                ) : (
+                    <>
+                        <a href="#" class="w-10 h-10 rounded-full bg-royal-900 flex items-center justify-center text-stone-400 hover:bg-gold-500 hover:text-royal-950 transition">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-royal-900 flex items-center justify-center text-stone-400 hover:bg-gold-500 hover:text-royal-950 transition">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-royal-900 flex items-center justify-center text-stone-400 hover:bg-gold-500 hover:text-royal-950 transition">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                    </>
+                )}
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-6">Navigasi</h5>
+            <ul class="space-y-3 text-sm font-light">
+                <li><a href="/tentang-kami" class="hover:text-gold-400 transition">Tentang Kami</a></li>
+                <li><a href="/akademi" class="hover:text-gold-400 transition">Program Pendidikan</a></li>
+                <li><a href="/transparansi" class="hover:text-gold-400 transition">Laporan Keuangan</a></li>
+                <li><a href="/psb" class="hover:text-gold-400 transition">Pendaftaran Santri</a></li>
+            </ul>
+        </div>
+
+        <!-- Wakaf Programs -->
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-6">Program Wakaf</h5>
+            <ul class="space-y-3 text-sm font-light">
+                <li><a href="/donasi" class="hover:text-gold-400 transition">Wakaf Uang</a></li>
+                <li><a href="/donasi" class="hover:text-gold-400 transition">Wakaf Aset</a></li>
+                <li><a href="/donasi" class="hover:text-gold-400 transition">Wakaf Profesi</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+            <h5 class="text-white font-bold uppercase tracking-widest text-xs mb-6">Kontak</h5>
+            <ul class="space-y-4 text-sm font-light">
+                <li class="flex items-start gap-3">
+                    <i data-lucide="map-pin" class="w-4 h-4 mt-1 text-gold-500"></i>
+                    <span set:html={contactInfo.address?.replace(/\n/g, '<br>')}></span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <i data-lucide="phone" class="w-4 h-4 text-gold-500"></i>
+                    <span>{contactInfo.phone}</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <i data-lucide="mail" class="w-4 h-4 text-gold-500"></i>
+                    <a href={`mailto:${contactInfo.email}`} class="hover:text-gold-400 transition">{contactInfo.email}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="border-t border-royal-900 pt-8 text-center text-xs text-stone-500 uppercase tracking-widest">
+        &copy; {new Date().getFullYear()} Yayasan {siteTitle} Royal Philanthropy. <br>
+        <span class="text-royal-800 mt-2 block">
+            Powered by <strong>Isyraq Annur Media</strong> & <strong>Pesantren Mahasiswa An-Nur</strong>
+        </span>
+    </div>
+</footer>

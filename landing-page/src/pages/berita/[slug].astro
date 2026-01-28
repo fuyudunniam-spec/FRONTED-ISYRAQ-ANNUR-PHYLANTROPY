@@ -1,0 +1,300 @@
+---
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import { client, queries, urlFor } from '../../lib/sanity';
+import { PortableText } from '@portabletext/react';
+
+// Get all posts for static paths
+export async function getStaticPaths() {
+    const posts = await client.fetch(`*[_type == "blogPost" && isPublished == true] { slug }`);
+    return posts.map((post: any) => ({
+        params: { slug: post.slug?.current },
+    }));
+}
+
+const { slug } = Astro.params;
+
+// Fetch post data
+let post: any = null;
+
+try {
+    post = await client.fetch(queries.blogPost(slug as string));
+} catch (error) {
+    console.error('Failed to fetch blog post:', error);
+}
+
+if (!post) {
+    return Astro.redirect('/berita');
+}
+
+function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
+
+// Social links icon mapping
+const socialIcons: Record<string, string> = {
+    email: 'mail',
+    twitter: 'twitter',
+    instagram: 'instagram',
+    linkedin: 'linkedin',
+    website: 'globe',
+};
+---
+
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{post.title} | Berita Al-Bisri</title>
+    <meta name="description" content={post.excerpt}>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royal: { 50: '#f0fdf4', 100: '#dcfce7', 800: '#166534', 900: '#14532d', 950: '#052e16' },
+                        gold: { 100: '#fef9c3', 400: '#d4af37', 500: '#b4941f', 600: '#8c7318' },
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        display: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FAFAF9;
+            color: #1c1917;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .royal-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23166534' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .article-content {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            line-height: 2;
+            color: #44403c;
+        }
+        .article-content p { margin-bottom: 1.5rem; }
+        .article-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #14532d;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+        }
+        .article-content h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #14532d;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        .article-content blockquote {
+            border-left: 4px solid #d4af37;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: #1c1917;
+            font-size: 1.4rem;
+        }
+        .article-content img {
+            border-radius: 1rem;
+            margin: 2rem 0;
+            width: 100%;
+        }
+        .article-content a { color: #14532d; text-decoration: underline; }
+        .article-content ul, .article-content ol { margin-left: 1.5rem; margin-bottom: 1.5rem; }
+        .article-content li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+
+<body class="antialiased royal-pattern">
+    <Navigation activeRoute="/berita" />
+
+    <!-- Article Header -->
+    <header class="bg-white border-b border-stone-200 py-16">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <a href="/berita" class="inline-flex items-center gap-2 text-stone-500 hover:text-royal-900 text-sm font-bold uppercase tracking-wider mb-6 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Berita
+            </a>
+            
+            {post.category && (
+                <span class="inline-block py-1 px-4 rounded-full bg-royal-100 text-royal-900 text-xs font-bold uppercase tracking-wider mb-6">
+                    {post.category.name}
+                </span>
+            )}
+            
+            <h1 class="text-3xl md:text-5xl font-display text-royal-900 mb-6 leading-tight">{post.title}</h1>
+            
+            <div class="flex items-center justify-center gap-6 text-sm text-stone-500">
+                {post.author && (
+                    <div class="flex items-center gap-2">
+                        {post.author.avatar ? (
+                            <img src={urlFor(post.author.avatar).width(32).height(32).url()} 
+                                alt={post.author.name}
+                                class="w-8 h-8 rounded-full object-cover">
+                        ) : (
+                            <div class="w-8 h-8 rounded-full bg-royal-100 flex items-center justify-center text-royal-900 font-bold text-sm">
+                                {post.author.name?.charAt(0)}
+                            </div>
+                        )}
+                        <span class="font-bold text-royal-900">{post.author.name}</span>
+                    </div>
+                )}
+                <span>•</span>
+                <span>{formatDate(post.publishedAt)}</span>
+                {post.readingTime && (
+                    <>
+                        <span>•</span>
+                        <span>{post.readingTime} min read</span>
+                    </>
+                )}
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Image -->
+    {post.featuredImage && (
+        <div class="max-w-5xl mx-auto px-6 -mt-8 mb-12">
+            <img 
+                src={urlFor(post.featuredImage).width(1200).height(600).url()} 
+                alt={post.featuredImage.alt || post.title}
+                class="w-full rounded-[2rem] shadow-2xl object-cover aspect-[2/1]"
+            >
+            {post.featuredImage.caption && (
+                <p class="text-center text-sm text-stone-400 mt-4 italic">{post.featuredImage.caption}</p>
+            )}
+        </div>
+    )}
+
+    <!-- Article Content -->
+    <article class="max-w-3xl mx-auto px-6 pb-16">
+        <div class="article-content">
+            {post.content?.map((block: any) => {
+                if (block._type === 'block') {
+                    const style = block.style || 'normal';
+                    const Tag = style === 'h2' ? 'h2' : style === 'h3' ? 'h3' : style === 'blockquote' ? 'blockquote' : 'p';
+                    return (
+                        <Tag>
+                            {block.children?.map((child: any) => {
+                                let text = child.text;
+                                if (child.marks?.includes('strong')) text = <strong>{text}</strong>;
+                                if (child.marks?.includes('em')) text = <em>{text}</em>;
+                                return text;
+                            })}
+                        </Tag>
+                    );
+                }
+                if (block._type === 'image') {
+                    return (
+                        <figure class="my-8">
+                            <img src={urlFor(block).width(800).url()} alt={block.alt || ''} class="rounded-xl">
+                            {block.caption && <figcaption class="text-center text-sm text-stone-400 mt-2">{block.caption}</figcaption>}
+                        </figure>
+                    );
+                }
+                return null;
+            })}
+        </div>
+
+        <!-- Tags -->
+        {post.tags && post.tags.length > 0 && (
+            <div class="mt-12 pt-8 border-t border-stone-200">
+                <div class="flex flex-wrap gap-2">
+                    {post.tags.map((tag: string) => (
+                        <span class="px-4 py-1 bg-stone-100 text-stone-600 rounded-full text-xs font-bold uppercase tracking-wider">
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        <!-- Author Box -->
+        {post.author && (
+            <div class="mt-12 p-8 bg-white rounded-[2rem] border border-stone-200 shadow-sm">
+                <div class="flex items-start gap-6">
+                    {post.author.avatar ? (
+                        <img src={urlFor(post.author.avatar).width(80).height(80).url()} 
+                            alt={post.author.name}
+                            class="w-20 h-20 rounded-full object-cover shrink-0">
+                    ) : (
+                        <div class="w-20 h-20 rounded-full bg-royal-100 flex items-center justify-center text-royal-900 font-display font-bold text-2xl shrink-0">
+                            {post.author.name?.charAt(0)}
+                        </div>
+                    )}
+                    <div class="flex-1">
+                        <h4 class="font-display text-lg text-royal-900 font-bold">{post.author.name}</h4>
+                        {post.author.role && (
+                            <p class="text-sm text-gold-600 font-bold uppercase tracking-wider mb-3">{post.author.role}</p>
+                        )}
+                        {post.author.bio && (
+                            <p class="text-stone-600 text-sm leading-relaxed mb-4">{post.author.bio}</p>
+                        )}
+                        
+                        {/* Social Links */}
+                        {post.author.socialLinks && (
+                            <div class="flex gap-3">
+                                {Object.entries(post.author.socialLinks).map(([platform, url]) => {
+                                    if (!url) return null;
+                                    const href = platform === 'email' ? `mailto:${url}` : url as string;
+                                    return (
+                                        <a href={href} target={platform !== 'email' ? '_blank' : undefined} rel="noopener noreferrer"
+                                            class="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 hover:bg-royal-900 hover:text-white transition">
+                                            <i data-lucide={socialIcons[platform] || 'link'} class="w-4 h-4"></i>
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        <!-- Related Posts -->
+        {post.relatedPosts && post.relatedPosts.length > 0 && (
+            <div class="mt-16">
+                <h3 class="font-display text-2xl text-royal-900 mb-8">Artikel Terkait</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    {post.relatedPosts.map((related: any) => (
+                        <a href={`/berita/${related.slug?.current}`} class="group">
+                            <div class="aspect-video rounded-xl overflow-hidden mb-4">
+                                {related.featuredImage && (
+                                    <img src={urlFor(related.featuredImage).width(400).height(225).url()}
+                                        alt={related.title}
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                )}
+                            </div>
+                            <span class="text-xs text-stone-400 font-bold uppercase">{formatDate(related.publishedAt)}</span>
+                            <h4 class="text-lg font-display text-royal-900 group-hover:text-gold-600 transition">{related.title}</h4>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )}
+    </article>
+
+    <Footer />
+
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

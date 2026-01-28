@@ -1,0 +1,67 @@
+---
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	activeRoute?: string;
+}
+
+const { 
+	title, 
+	description = "Yayasan Al-Bisri - Memuliakan Yatim, Membangun Peradaban", 
+	activeRoute = '/' 
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- Royal Gold Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		<!-- Royal Gold Theme CSS -->
+		<link rel="stylesheet" href="/styles/royal-gold.css">
+		
+		<!-- Lucide Icons -->
+		<script src="https://unpkg.com/lucide@latest" is:inline></script>
+		
+		<!-- Chart.js for Impact Fund -->
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" is:inline></script>
+		
+		<title>{title}</title>
+	</head>
+	<body class="antialiased royal-pattern overflow-x-hidden">
+		<Navigation activeRoute={activeRoute} />
+		<slot />
+		<Footer />
+		
+		<script is:inline>
+			// Wait for the page to fully load then initialize Lucide icons
+			function initLucide() {
+				if (typeof lucide !== 'undefined') {
+					lucide.createIcons();
+				} else {
+					// Retry in 100ms if lucide not yet loaded
+					setTimeout(initLucide, 100);
+				}
+			}
+			// Start initialization when DOM is ready
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initLucide);
+			} else {
+				initLucide();
+			}
+		</script>
+	</body>
+</html>
