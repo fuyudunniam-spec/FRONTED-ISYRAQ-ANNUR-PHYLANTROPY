@@ -19,11 +19,11 @@ const {
     
     <div class="space-y-8">
       <div class="inline-block border-l-4 border-secondary pl-4">
-        <h2 class="font-serif text-4xl md:text-5xl text-[#2D3A18] font-bold">{title}</h2>
+        <h2 class="font-serif text-4xl md:text-5xl text-royal-900 font-bold">{title}</h2>
         <p class="text-secondary font-medium mt-2 tracking-wide uppercase text-sm">Filosofi Pendidikan Kami</p>
       </div>
       
-      <p class="text-lg text-[#2D3A18]/80 leading-relaxed font-sans">
+      <p class="text-lg text-royal-900/80 leading-relaxed font-sans">
         {content}
       </p>
 
@@ -31,15 +31,15 @@ const {
         <div class="grid grid-cols-2 gap-6 pt-4">
           {stats.map((stat) => (
             <div class="space-y-1">
-              <div class="text-3xl font-serif font-bold text-[#B8860B]">{stat.value}</div>
-              <div class="text-sm text-[#2D3A18]/60 uppercase tracking-wider font-medium">{stat.label}</div>
+              <div class="text-3xl font-serif font-bold text-gold-600">{stat.value}</div>
+              <div class="text-sm text-royal-900/60 uppercase tracking-wider font-medium">{stat.label}</div>
             </div>
           ))}
         </div>
       ) : (
         <ul class="space-y-4">
           {['Kurikulum Berbasis Adab', 'Hafalan Al-Quran 30 Juz', 'Enterpreneurship Skill'].map((item) => (
-            <li class="flex items-center gap-3 text-[#2D3A18]/90 font-medium">
+            <li class="flex items-center gap-3 text-royal-900/90 font-medium">
               <span class="w-2 h-2 rounded-full bg-secondary"></span>
               {item}
             </li>
@@ -55,11 +55,11 @@ const {
     </div>
 
     <div class="relative">
-      <div class="aspect-[4/5] rounded-tl-[100px] rounded-br-[100px] overflow-hidden bg-[#2D3A18]/5 relative z-10 shadow-2xl">
+      <div class="aspect-[4/5] rounded-tl-[100px] rounded-br-[100px] overflow-hidden bg-royal-900/5 relative z-10 shadow-2xl">
         {image ? (
           <img src={image} alt={title} class="w-full h-full object-cover" />
         ) : (
-          <div class="w-full h-full flex items-center justify-center text-[#2D3A18]/20">
+          <div class="w-full h-full flex items-center justify-center text-royal-900/20">
               [Unggah Gambar di Sanity]
           </div>
         )}

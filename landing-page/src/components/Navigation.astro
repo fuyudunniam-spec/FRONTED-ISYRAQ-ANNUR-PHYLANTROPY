@@ -13,17 +13,24 @@ let navLinks: any[] = [];
 
 try {
     siteSettings = await client.fetch(queries.siteSettings);
-    navLinks = siteSettings?.mainNavigation || [];
+    navLinks = (siteSettings?.mainNavigation || []).map((item: any) => {
+        // Map old links to new structure
+        if (item.link === '/tentang-kami') return { ...item, link: '/isyraq-annur-philanthropy/about-us' };
+        if (item.link === '/donasi') return { ...item, link: '/isyraq-annur-philanthropy/donasi' };
+        if (item.link === '/psb') return { ...item, link: '/isyraq-annur-philanthropy/psb' };
+        if (item.link === '/transparansi') return { ...item, link: '/isyraq-annur-philanthropy/transparansi' };
+        if (item.link === '/berita') return { ...item, link: '/isyraq-annur-philanthropy/berita' };
+        if (item.link === '/') return { ...item, link: '/isyraq-annur-philanthropy' };
+        return item;
+    }).filter((item: any) => item.title.toLowerCase() !== 'academy' && item.title.toLowerCase() !== 'akademi');
 } catch (error) {
     console.error('Failed to fetch navigation from Sanity:', error);
-    // Fallback to default navigation
     navLinks = [
-        { title: 'Beranda', link: '/', isButton: false },
-        { title: 'Tentang', link: '/tentang-kami', isButton: false },
-        { title: 'Academy', link: '/akademi', isButton: false },
-        { title: 'Wakaf', link: '/donasi', isButton: false },
-        { title: 'Berita', link: '/berita', isButton: false },
-        { title: 'Daftar Santri', link: '/psb', isButton: true },
+        { title: 'Beranda', link: '/isyraq-annur-philanthropy', isButton: false },
+        { title: 'Tentang', link: '/isyraq-annur-philanthropy/about-us', isButton: false },
+        { title: 'Wakaf', link: '/isyraq-annur-philanthropy/donasi', isButton: false },
+        { title: 'Berita', link: '/isyraq-annur-philanthropy/berita', isButton: false },
+        { title: 'Daftar Santri', link: '/isyraq-annur-philanthropy/psb', isButton: true },
     ];
 }
 
@@ -32,24 +39,16 @@ const logoImage = siteSettings?.logo;
 ---
 
 <nav class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 h-24 grid grid-cols-12 items-center gap-4">
+    <div class="max-w-7xl mx-auto px-6 h-20 grid grid-cols-12 items-center gap-4">
         <!-- Logo -->
-        <div class="col-span-6 lg:col-span-3 flex justify-start items-center gap-3">
-            <a href="/" class="flex items-center gap-3 group">
-                {logoImage ? (
+        <div class="col-span-6 lg:col-span-3 flex justify-start items-center">
+            <a href="/isyraq-annur-philanthropy" class="flex items-center group">
+                <div class="h-16 flex items-center overflow-visible">
                     <img 
-                        src={urlFor(logoImage).width(40).height(40).url()} 
-                        alt={siteTitle}
-                        class="w-10 h-10 rounded-sm shadow-md"
+                        src="/images/logo-isyraq.png" 
+                        alt="Isyraq Annur Media"
+                        class="h-40 w-auto object-contain transform transition-all duration-300 group-hover:scale-105 -my-8"
                     />
-                ) : (
-                    <div class="w-10 h-10 bg-royal-900 text-white rotate-45 flex items-center justify-center rounded-sm shadow-md cursor-pointer group-hover:rotate-0 transition-transform duration-300">
-                        <span class="font-display font-bold text-gold-400 text-lg -rotate-45">A</span>
-                    </div>
-                )}
-                <div class="flex flex-col">
-                    <span class="font-display font-bold text-royal-900 tracking-widest text-lg leading-none">{siteTitle}</span>
-                    <span class="text-[9px] text-gold-600 uppercase tracking-[0.25em] font-sans font-semibold">Institute</span>
                 </div>
             </a>
         </div>
@@ -77,7 +76,7 @@ const logoImage = siteSettings?.logo;
                     <i data-lucide="user-plus" class="w-3 h-3"></i> {navLinks.find((item: any) => item.isButton)?.title || 'Daftar'}
                 </a>
             )}
-            <a href="/donasi" class="group flex items-center gap-2 px-6 py-2.5 bg-royal-900 text-white text-sm uppercase tracking-widest font-semibold hover:bg-royal-800 transition shadow-lg shadow-royal-900/20 rounded-sm">
+            <a href="/isyraq-annur-philanthropy/donasi" class="group flex items-center gap-2 px-5 py-2 bg-royal-900 text-white text-[11px] uppercase tracking-widest font-semibold hover:bg-royal-800 transition shadow-lg shadow-royal-900/20 rounded-sm">
                 <span>Investasi Wakaf</span>
                 <i data-lucide="heart" class="w-3 h-3 text-gold-400 fill-current group-hover:scale-110 transition-transform"></i>
             </a>

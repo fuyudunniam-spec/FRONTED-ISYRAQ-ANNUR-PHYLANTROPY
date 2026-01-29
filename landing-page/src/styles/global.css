@@ -4,6 +4,42 @@
 
 @layer base {
     :root {
+        /* Default Theme: Isyraq An-Nur Philanthropy (Deep Navy & Gold) */
+
+        /* Background: #F8FAFC (Slate 50 - Paper White) */
+        --background: 210 40% 98%;
+
+        /* Foreground: #0F172A (Slate 900 - Dark Text) */
+        --foreground: 222 47% 11%;
+
+        /* Primary: #082F49 (Sky 950 - Deep Navy) */
+        --primary: 204 80% 16%;
+
+        /* Secondary: #D4AF37 (Classic Gold) */
+        --secondary: 46 65% 52%;
+
+        /* Accent: #B4941F (Darker Gold/Bronze) */
+        --accent: 47 41% 41%;
+
+        /* Muted/Border: #E2E8F0 (Slate 200) */
+        --muted: 214 32% 96%;
+
+        /* Deep Navy Shadows & Tokens (Mapping for 'royal' classes) */
+        --royal-50: 210 40% 98%;
+        --royal-100: 214 32% 91%;
+        --royal-800: 204 80% 25%;
+        --royal-900: 204 80% 16%;
+        --royal-950: 204 80% 10%;
+
+        /* Gold Shadows & Tokens (Mapping for 'gold' classes) */
+        --gold-100: 46 65% 95%;
+        --gold-400: 46 65% 52%;
+        --gold-500: 47 41% 41%;
+        --gold-600: 47 41% 30%;
+    }
+
+    /* Tema Lama (Disimpan sebagai cadangan/alternatif) */
+    .theme-albisri-original {
         --background: 40 33% 98%;
         /* #FDFBF7 */
         --foreground: 82 41% 16%;
@@ -26,19 +62,93 @@
         --accent: 43 100% 50%;
     }
 
-    .theme-modern-dark {
-        --background: 222 47% 11%;
-        --foreground: 210 40% 98%;
-        --primary: 217 91% 60%;
-        --secondary: 210 40% 96%;
-        --accent: 217 91% 60%;
+    /* Typography Defaults */
+    body {
+        @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
     }
 
-    .theme-eco-green {
-        --background: 140 30% 98%;
-        --foreground: 140 50% 10%;
-        --primary: 142 70% 25%;
-        --secondary: 142 70% 45%;
-        --accent: 142 70% 25%;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-display text-[hsl(var(--primary))];
+    }
+}
+
+/* Custom Components based on Theme Colors */
+@layer components {
+    .btn-primary {
+        @apply bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--primary))]/90 transition-colors shadow-lg;
+    }
+
+    .btn-secondary {
+        @apply bg-[hsl(var(--secondary))] text-white hover:bg-[hsl(var(--secondary))]/90 transition-colors;
+    }
+
+    .btn-outline {
+        @apply border border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))] hover:text-white transition-colors;
+    }
+
+    .card-glass {
+        @apply bg-white/80 backdrop-blur-md border border-[hsl(var(--muted))] shadow-sm;
+    }
+
+    /* Royal Pattern Background (Dynamic) */
+    .royal-pattern {
+        background-color: hsl(var(--background));
+        /* Using Navy Hex #082F49 in fill */
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23082F49' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Glass Panels */
+    .glass-panel {
+        background: hsla(var(--background) / 0.7);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid hsla(var(--background) / 0.18);
+    }
+
+    .glass-panel-dark {
+        background: hsla(var(--royal-900) / 0.95);
+        color: white;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 40px -10px hsla(var(--royal-900) / 0.3);
+    }
+
+    /* Animations */
+    .fade-up {
+        animation: fadeUp 1s ease-out forwards;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    @keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .btn-glow:hover {
+        box-shadow: 0 0 20px hsla(var(--gold-400) / 0.4);
+        transform: translateY(-2px);
     }
 }
