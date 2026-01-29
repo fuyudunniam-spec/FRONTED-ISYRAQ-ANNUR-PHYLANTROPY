@@ -1,0 +1,15 @@
+{
+    "name": "isyraq-annur-monorepo",
+    "private": true,
+    "workspaces": [
+        "landing-page",
+        "studio"
+    ],
+    "scripts": {
+        "build": "npm run build --workspace=landing-page",
+        "dev:landing": "npm run dev --workspace=landing-page",
+        "build:landing": "npm run build --workspace=landing-page",
+        "dev:studio": "npm run dev --workspace=studio",
+        "build:studio": "npm run build --workspace=studio"
+    }
+}
