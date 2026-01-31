@@ -17,7 +17,7 @@ try {
         // Map old links to new structure
         if (item.link === '/tentang-kami') return { ...item, link: '/isyraq-annur-philanthropy/about-us' };
         if (item.link === '/donasi') return { ...item, link: '/isyraq-annur-philanthropy/donasi' };
-        if (item.link === '/psb') return { ...item, link: '/isyraq-annur-philanthropy/psb' };
+        if (item.link === '/psb') return { ...item, link: 'https://pesantren-albisri.vercel.app/psb' };
         if (item.link === '/transparansi') return { ...item, link: '/isyraq-annur-philanthropy/transparansi' };
         if (item.link === '/berita') return { ...item, link: '/isyraq-annur-philanthropy/berita' };
         if (item.link === '/') return { ...item, link: '/isyraq-annur-philanthropy' };
@@ -30,7 +30,7 @@ try {
         { title: 'Tentang', link: '/isyraq-annur-philanthropy/about-us', isButton: false },
         { title: 'Wakaf', link: '/isyraq-annur-philanthropy/donasi', isButton: false },
         { title: 'Berita', link: '/isyraq-annur-philanthropy/berita', isButton: false },
-        { title: 'Daftar Santri', link: '/isyraq-annur-philanthropy/psb', isButton: true },
+        { title: 'Daftar Santri', link: 'https://pesantren-albisri.vercel.app/psb', isButton: true },
     ];
 }
 
